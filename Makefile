@@ -31,3 +31,48 @@ go.mod:
 sync: go.mod .env   ## Download dependencies
 	go mod download
 	go mod tidy && go mod vendor
+
+.PHONY: install-air
+install-air:
+	go install github.com/air-verse/air@latest
+
+.PHONY: install-gofumpt
+install-gofumpt:
+	go install mvdan.cc/gofumpt@latest
+
+.PHONY: install-golangci-lint
+install-golangci-lint:
+	brew install golangci-lint
+
+.PHONY: install-gotestsum
+install-gotestsum:
+	go install gotest.tools/gotestsum@latest
+
+.PHONY: install-tagref
+install-tagref:
+	@if ! command -v tagref >/dev/null 2>&1; then \
+		echo "tagref executable not found. Please install it from https://github.com/stepchowfun/tagref?tab=readme-ov-file#installation-instructions"; \
+		exit 1; \
+	fi
+
+.git/hooks/pre-push:
+	@echo "Setting up Git hooks..."
+	@cp dev_tools/hooks/pre-push .git/hooks/pre-push
+	@chmod +x .git/hooks/pre-push
+	@echo "✅ Git hooks installed successfully!"
+	@echo "The pre-push hook will run make check, make format, and make test before each push."
+
+.PHONY: install-hooks
+install-hooks: .git/hooks/pre-push
+
+CONVENTIONS.md:
+	@echo "Download the CONVENTIONS.md file from the [[https://github.com/unravel-team/metago][metago]] project"
+
+.aider.conf.yml:
+	@echo "Download the .aider.conf.yml file from the [[https://github.com/unravel-team/metago][metago]] project"
+
+.gitignore:
+	@echo "Download the .gitignore file from the [[https://github.com/unravel-team/metago][metago]] project"
+
+.PHONY: install-dev-tools
+install-dev-tools: install-air install-gofumpt install-golangci-lint install-gotestsum install-tagref install-hooks CONVENTIONS.md .aider.conf.yml .gitignore    ## Install all development tools
