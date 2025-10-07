@@ -87,7 +87,7 @@ check-tagref: install-tagref
 
 .PHONY: build-air
 build-air:
-	go build -o bin/wago ./cmd/wago
+	go build -o bin/metago ./cmd/metago
 
 .PHONY: build
 build: check build-air       ## Build the deployment artifact
@@ -97,8 +97,8 @@ dev:  install-air  ## Run in development mode with auto-reload, using air
 	air -c .air.toml
 
 .PHONY: server
-server: build  ## Run the wago server binary
-	./bin/wago
+server: build  ## Run the server binary
+	./bin/metago
 
 .PHONY: check
 check: check-lint check-tagref      ## Check that the code is well linted, well typed, well documented
@@ -107,3 +107,16 @@ check: check-lint check-tagref      ## Check that the code is well linted, well 
 format:     ## Format the code using gofumpt
 	gofumpt -w .
 	gofmt -w .
+
+.PHONY: test
+test:   ## Run the unit tests for the code
+	gotestsum --format testname
+
+.PHONY: upgrade-libs
+upgrade-libs:  ## Install all the deps to their latest versions
+	go get -u ./...
+	go mod tidy
+
+.PHONY: clean
+clean:  ## Clean build artifacts
+	rm -rf bin/
