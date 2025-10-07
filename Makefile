@@ -76,3 +76,34 @@ CONVENTIONS.md:
 
 .PHONY: install-dev-tools
 install-dev-tools: install-air install-gofumpt install-golangci-lint install-gotestsum install-tagref install-hooks CONVENTIONS.md .aider.conf.yml .gitignore    ## Install all development tools
+
+.PHONY: check-lint
+check-lint:
+	golangci-lint run
+
+.PHONY: check-tagref
+check-tagref: install-tagref
+	tagref
+
+.PHONY: build-air
+build-air:
+	go build -o bin/wago ./cmd/wago
+
+.PHONY: build
+build: check build-air       ## Build the deployment artifact
+
+.PHONY: server
+dev:  install-air  ## Run in development mode with auto-reload, using air
+	air -c .air.toml
+
+.PHONY: server
+server: build  ## Run the wago server binary
+	./bin/wago
+
+.PHONY: check
+check: check-lint check-tagref      ## Check that the code is well linted, well typed, well documented
+
+.PHONY: format
+format:     ## Format the code using gofumpt
+	gofumpt -w .
+	gofmt -w .
