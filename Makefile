@@ -48,6 +48,10 @@ install-golangci-lint:
 install-gotestsum:
 	go install gotest.tools/gotestsum@latest
 
+.PHONY: install-gopls
+install-gopls:
+	go install golang.org/x/tools/gopls@latest
+
 .PHONY: install-tagref
 install-tagref:
 	@if ! command -v tagref >/dev/null 2>&1; then \
@@ -75,7 +79,7 @@ CONVENTIONS.md:
 	@echo "Download the .gitignore file from the [[https://github.com/unravel-team/metago][metago]] project"
 
 .PHONY: install-dev-tools
-install-dev-tools: install-air install-gofumpt install-golangci-lint install-gotestsum install-tagref install-hooks CONVENTIONS.md .aider.conf.yml .gitignore    ## Install all development tools
+install-dev-tools: install-air install-gofumpt install-golangci-lint install-gopls install-gotestsum install-tagref install-hooks CONVENTIONS.md .aider.conf.yml .gitignore    ## Install all development tools
 
 .PHONY: check-lint
 check-lint:
